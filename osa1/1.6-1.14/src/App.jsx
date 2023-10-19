@@ -1,41 +1,16 @@
 import { useState } from 'react'
 
-const Header = (props) => {
+const Button = ({ text, handleClick }) => {
   return (
-    <>
-      <h1>{props.header}</h1>
-    </>
+    <button onClick={handleClick}>{text}</button>
   )
 }
 
-const Button = (props) => {
+const StatisticLine = ({ text, value }) => {
   return (
-    <>
-      <button onClick={props.onClick}>{props.name}</button>
-    </>
-  )
-}
-
-const Statistics = (props) => {
-  const { good, neutral, bad } = props
-  const total = good + neutral + bad
-
-  if (total === 0) {
-    return (
-      <div>
-        <p>No feedback given</p>
-      </div>
-    )
-  }
-
-  const average = (1 * good + 0 * neutral + -1 * bad) / total
-  const positive = (good / total) * 100
-
-  return (
-    <>
-      <p>Average {average.toFixed(2)}</p>
-      <p>Positive {positive.toFixed(2)}%</p>
-    </>
+    <p>
+      {text}: {value}
+    </p>
   )
 }
 
@@ -46,22 +21,23 @@ const App = () => {
 
   return (
     <div>
-      <Header header={'Give feedback'} />
-      <Button name={'Good'} onClick={() => setGood(good + 1)} />
-      <Button name={'Neutral'} onClick={() => setNeutral(neutral + 1)} />
-      <Button name={'Bad'} onClick={() => setBad(bad + 1)} />
-      <Header header={'Statistics'} />
+      <h1>Give feedback</h1>
+      <Button text="Good" handleClick={() => setGood(good + 1)} />
+      <Button text="Neutral" handleClick={() => setNeutral(neutral + 1)} />
+      <Button text="Bad" handleClick={() => setBad(bad + 1)} />
       
-      {good + neutral + bad > 0 ? (
-        <>
-          <Statistics good={good} neutral={neutral} bad={bad} />
-          <p>Good {good}</p>
-          <p>Neutral {neutral}</p>
-          <p>Bad {bad}</p>
-          <p>All {bad + neutral + good}</p>
-        </>
+      <h1>Statistics</h1>
+      {good + neutral + bad === 0 ? (
+        <p>No feedback given</p>
       ) : (
-        <p>No feedback given yet.</p>
+        <div>
+          <StatisticLine text="Good" value={good} />
+          <StatisticLine text="Neutral" value={neutral} />
+          <StatisticLine text="Bad" value={bad} />
+          <StatisticLine text="All" value={good + neutral + bad} />
+          <StatisticLine text="Average" value={((good - bad) / (good + neutral + bad)).toFixed(2)} />
+          <StatisticLine text="Positive" value={`${((good / (good + neutral + bad)) * 100).toFixed(2)}%`} />
+        </div>
       )}
     </div>
   )
